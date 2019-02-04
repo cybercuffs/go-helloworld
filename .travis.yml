@@ -1,0 +1,20 @@
+language: go
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker build -t cybercuffs/go-apps:go-helloworld .
+      - docker images
+      - docker run -d -p 80:8080 --name  go-helloworld cybercuffs/go-apps:go-helloworld
+      
+    - stage: test
+      script:
+      - docker exec -it go-helloworld /bin/sh -c "cd tests; go test"
+    - stage: deploy
+      script:
+      - docker push cybercuffs/go-apps:go-helloworld
