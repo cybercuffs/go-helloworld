@@ -1,16 +1,13 @@
 language: go
-env:
-  - GO111MODULE=on
-go:
-  - 1.11.x
+
 services:
   - docker
 
-  
 jobs:
   include:
     - stage: build docker image
       script:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker build -t $DOCKER_USERNAME/go-apps:go-helloworld .
       - docker images
       - docker run -d -p 80:8080 --name  go-helloworld $DOCKER_USERNAME/go-apps:go-helloworld
