@@ -11,12 +11,12 @@ jobs:
       - docker build -t cybercuffs/go-apps:go-helloworld .
       - docker images
       - docker run -d -p 80:8080 --name  go-helloworld "$DOCKER_USERNAME"/go-apps:go-helloworld
-    - stage: test
-      script:
-      - docker exec -it go-helloworld /bin/sh -c "cd server/tests; go test"
-    - stage: deploy
-      script:
-      - docker push "$DOCKER_USERNAME"/go-apps:go-helloworld
+      - stage: test
+        script:
+        - docker exec -it go-helloworld /bin/sh -c "cd server/tests; go test"
+      - stage: deploy
+        script:
+        - docker push "$DOCKER_USERNAME"/go-apps:go-helloworld
 
 # language: go
 # env:
