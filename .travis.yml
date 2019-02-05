@@ -1,40 +1,15 @@
 language: go
-
+env:
+  - GO111MODULE=on
+go:
+  - 1.11.x
 services:
-  - docker
-
+- docker
 before_install:
 - docker build -t "$DOCKER_USERNAME"/go-apps:go-helloworld .
 - docker run -d -p 80:8080 --name  go-helloworld "$DOCKER_USERNAME"/go-apps:go-helloworld
-
-jobs:
-  include:
-    # - stage: build docker image
-    #   script:
-      # - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      # - docker build -t cybercuffs/go-apps:go-helloworld .
-      # - docker images
-      # - docker run -d -p 80:8080 --name  go-helloworld "$DOCKER_USERNAME"/go-apps:go-helloworld
-    - stage: test
-      script:
-      - docker exec -it go-helloworld /bin/sh -c "cd server/tests; go test"
-    - stage: deploy
-      script:
-      - docker push "$DOCKER_USERNAME"/go-apps:go-helloworld
-
-# language: go
-# env:
-#   - GO111MODULE=on
-# go:
-#   - 1.11.x
-# services:
-# - docker
-# before_install:
-# - docker build -t "$DOCKER_USERNAME"/go-apps:go-helloworld .
-# - docker run -d -p 80:8080 --name  go-helloworld "$DOCKER_USERNAME"/go-apps:go-helloworld
-# - docker exec -it go-helloworld /bin/sh -c "cd tests; go test"
-# script:
-# - docker ps | grep -q go-helloworld
-# deploy:
-#   provider: script
-#   script: bash deploy.sh
+test:
+- docker exec -it go-helloworld /bin/sh -c "cd server/tests; go test"
+deploy:
+  provider: script
+  script: bash deploy.sh
